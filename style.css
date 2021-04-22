@@ -1,20 +1,119 @@
 /* Variables */
 :root {
+    /* Spacing */
+    --padding-right: calc(env(safe-area-inset-right) + 10em) !important;
+    --padding-left: calc(env(safe-area-inset-left) + 10em) !important;
+    /* Colors */
     --color-bg-default: #f8f8f8 !important;
+    --color-text-default: rgba(0, 0, 0, 0.7) !important;
 }
 /* Typography */
 body {
     font-family: halyard-text, sans-serif !important;
-    font-size: 20px !important;
     font-weight: 300 !important;
+    line-height: 1.5 !important;
+}
+@media only screen and (min-width: 992px) {
+    body {
+        --minFontSize: 18px;
+        --maxFontSize: 20px;
+        --preferredFontSize: 2vw;
+        font-size: clamp(
+            var(--minFontSize),
+            var(--preferredFontSize),
+            var(--maxFontSize)
+        );
+    }
+}
+/* enforce max-size for elements based on viewport width */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    body {
+        --minFontSize: 14px;
+        --maxFontSize: 16px;
+        --preferredFontSize: 1.6vw;
+        font-size: clamp(
+            var(--minFontSize),
+            var(--preferredFontSize),
+            var(--maxFontSize)
+        );
+    }
+}
+h1,
+h2,
+h3 {
+    font-style: italic;
+}
+h1 {
+    font-family: freight-big-pro, serif !important;
+    font-size: 3em !important;
+    font-weight: 500 !important;
+    line-height: 0.9 !important;
+    margin-bottom: 0.5em !important;
+}
+h1.notion-header__title {
+    font-size: 5em !important;
+}
+h2,
+h3 {
+    font-family: freight-display-pro, serif !important;
+    font-weight: 500 !important;
+}
+h2 {
+    font-size: 2.8em !important;
+    font-style: normal;
+    font-weight: 200;
+}
+h3 {
+    font-size: 2em !important;
+}
+.notion-semantic-string,
+.notion-text {
+    max-width: 54ch !important;
+}
+/* Sizing & spacing */
+.max-width,
+.super-content,
+.notion-navbar {
+    padding-right: var(--padding-right) !important;
+    padding-left: var(--padding-left) !important;
+    margin: 0 auto 0 0 !important;
+}
+.notion-header__title {
+    padding: 0 !important;
+}
+.max-width {
+    max-width: 1200px !important;
 }
 /* Overrides */
 .notion-toggle.bg-gray {
     display: none !important;
 }
 .notion-navbar {
-    background-color: transprent !important;
+    background-color: transparent !important;
 }
+/* Embeds */
+.static-tweet {
+    margin: initial;
+    margin-bottom: 1em;
+}
+/* Article Page */
+.notion-page__properties .notion-property {
+    padding: 0 !important;
+}
+.notion-page__properties
+    .notion-page__property:first-child
+    .notion-page__property-name {
+    display: none;
+}
+.notion-page__properties
+    .notion-page__property:first-child
+    .notion-property__text {
+    font-size: 1.2em;
+    font-weight: 200 !important;
+    font-style: italic;
+    grid-column: 1 / span 2;
+}
+
 /* Noise Background */
 .background {
     z-index: 100;
@@ -24,7 +123,7 @@ body {
     width: 100%;
     height: 100%;
     background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1295275/background-noise.png');
-    animation: 0.4s infinite noise;
+    animation: 0.15s infinite noise;
     pointer-events: none;
 }
 @keyframes noise {
