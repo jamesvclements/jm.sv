@@ -1,0 +1,238 @@
+<!-- Fathom - beautiful, simple website analytics -->
+<script
+    src="https://bug.jm.sv/script.js"
+    data-site="ISUNQAXL"
+    data-included-domains="jm.sv"
+    defer
+></script>
+<!-- / Fathom -->
+<!-- Redirects -->
+<script>
+    const redirects = {
+        '/cushion': '/burn',
+    };
+    if (location.pathname in redirects) {
+        window.location.replace(redirects[location.pathname]);
+    }
+</script>
+<!-- <script
+    src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+    integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+    crossorigin="anonymous"
+></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.typekit.net/rxx7czl.css" />
+<script>
+    const WEBHOOK_URL = `https://hooks.zapier.com/hooks/catch/8446446/bhowoce/`;
+
+    /**
+     * Helper function for POSTing data as JSON with fetch.
+     *
+     * @param {Object} options
+     * @param {string} options.url - URL to POST data to
+     * @param {FormData} options.formData - `FormData` instance
+     * @return {Object} - Response body from URL that was POSTed to
+     */
+    async function postFormDataAsJson({ url, formData }) {
+        /* Add metadata to payload */
+        formData.append('originalSource', 'jm.sv');
+        formData.append(
+            'referrerURL',
+            `${window.location.hostname}${window.location.pathname}`
+        );
+
+        const plainFormData = Object.fromEntries(formData.entries());
+
+        /* Format payload to match Airtable values */
+        if (plainFormData.preference === 'both') {
+            plainFormData.preference = 'Work, Not Work';
+        } else if (plainFormData.preference === 'work') {
+            plainFormData.preference = 'Work';
+        } else {
+            plainFormData.preference = 'Not Work';
+        }
+
+        const formDataJsonString = JSON.stringify(plainFormData);
+
+        const fetchOptions = {
+            method: 'POST',
+            body: formDataJsonString,
+        };
+
+        const response = await fetch(WEBHOOK_URL, fetchOptions);
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+
+        return response.json();
+    }
+
+    /**
+     * Event handler for a form submit event.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event
+     *
+     * @param {SubmitEvent} event
+     */
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const url = form.action;
+
+        try {
+            const formData = new FormData(form);
+            const responseData = await postFormDataAsJson({ url, formData });
+            console.log({ responseData });
+            if (responseData.status === 'success') {
+                window.fathom.trackGoal('2OCARFTQ', 0);
+                document
+                    .getElementsByClassName('grid--subscribe')[0]
+                    .classList.add('hidden');
+                document
+                    .getElementsByClassName('flex--subscribe-success')[0]
+                    .classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+<script>
+    const CAPTIONS = {
+        both: 'Opt for tactical posts about running a one-person studio or divergent personal reflections.',
+        work: 'Just tactical posts about running a one-person studio with modern software.',
+        'not-work':
+            'Just divergent personal reflections orbiting around tech, art, and mental health.',
+    };
+
+    function setSubscribeCaption() {
+        const preference = $(`input[name='preference']:checked`).val();
+        const caption = CAPTIONS[preference];
+        $('.subscribe-text-caption').html(caption);
+    }
+
+    $(`input[name='preference']`).each((_, input) => {
+        $(input).on('change', setSubscribeCaption);
+    });
+</script>
+<script>
+    const SUBSCRIBE_SECTION_RAW = `<section class="section section--subscribe"><div class="container container--subscribe max-width"><div class="grid grid--subscribe"><div class="subscribe-text"><h2 class="subtitle text-style--caps"><b>Care For Updates?</b></h2><div class="text--small color-gray subscribe-text-caption">Opt for tactical posts about running a one-person studio or divergent personal reflections.</div></div><form id="subscribe-form" type="POST" class="flex subscribe-form"><div class="flex subscribe-form-input-wrap"><input id="email" name="email" type="email" class="subtitle text-style--caps subscribe-form-input" placeholder="sure@why.not" required> <button type="submit" class="subscribe-form-button" value=""></div><div class="flex subscribe-form-options-wrap"><input type="radio" name="preference" id="work" value="work"> <label for="work" class="text--small-caps">Work</label> <input type="radio" name="preference" id="not-work" value="not-work"> <label for="not-work" class="text--small-caps"><strike>Work</strike></label> <input type="radio" name="preference" id="both" value="both" checked> <label for="both" class="text--small-caps">Both</label></div></form></div><div class="flex flex--subscribe-success hidden"><h2 class="subtitle text-style--caps"><b>Sweet, you're set.</b></h2></div></div></section>`;
+    const FOOTER_RAW = `<footer class="section section--footer"><div class="max-width container container--footer"><div class="grid grid--footer"><div class="footer-main-wrap"></div><div class="footer-primary-links"><a class="flex subtitle footer-primary-link" href="/"><div>Work</div></a><a class="flex subtitle footer-primary-link" href="/not-work"><div><strike>Work</strike></div></a><a class="flex subtitle footer-primary-link" href="/info"><div>Info</div></a></div><div class="flex footer-secondary-links"><div class="text--small-caps opacity-50">Elsewhere</div><a class="text--small" href="https://twitter.com/jamesvclements">Twitter</a></div><div class="footer-divider opacity-50"></div><div class="flex footer-credits"><div class="text--small opacity-50">Built on Notion.&nbsp; <a style="text-decoration:underline" href="https://twitter.com/jamesvclements/status/1455675681535373313">Why?</a></div><div class="footer-copyright text--small opacity-50">©<span data-current-year></span></div></div></div></div></footer>`;
+    const PROGRESS_BAR_RAW = `<progress id="progress-bar" value="0" max="100"></progress>`;
+    $(document).ready(function () {
+        /* add active nav link */
+        $('.nav a').each(function (_, elem) {
+            $(elem).removeClass('active');
+            if ($(elem).attr('href') === location.pathname) {
+                $(elem).addClass('active');
+            }
+        });
+
+        /* for content pages, set work or not work category in nav based on property */
+        const CATEGORY_PROPERTY_ID = `417a766d`;
+        const category = $(`.property-${CATEGORY_PROPERTY_ID}`);
+        // property presence indicates we're on a content page */
+        if (category.length) {
+            if ($(category).children('span').html() === 'Not Work') {
+                $(`.nav a[href='/not-work'`).addClass('active');
+            } else {
+                $(`.nav a[href='/']`).addClass('active');
+            }
+        }
+
+        const page = $(`div[id^='page-']`);
+
+        /* Append subscribe form */
+        page.append(SUBSCRIBE_SECTION_RAW);
+        /* Append footer */
+        $(document.body).append(FOOTER_RAW);
+        /* Append progress bar */
+        page.append(PROGRESS_BAR_RAW);
+        /* Wire up subscribe form */
+        const subscribeForm = document.getElementById('subscribe-form');
+        subscribeForm.addEventListener('submit', handleFormSubmit);
+        /* Dynamic subscribe form caption */
+        $(`input[name='preference']`).each((_, input) => {
+            $(input).on('change', setSubscribeCaption);
+        });
+        /* Update progress scroller */
+        const content = document.querySelector(`.super-content`);
+        const progress = document.querySelector('progress');
+        let inViewport = false;
+        let observer = new IntersectionObserver(handler);
+        observer.observe(content);
+
+        // Whenever the content comes in or out of view, this handler is invoked.
+        function handler(entries, observer) {
+            for (entry of entries) {
+                toggleVisibility(entry.isIntersecting);
+            }
+        }
+
+        function toggleVisibility(isIntersecting) {
+            const progressContainer = document.querySelector('progress[value]');
+            if (isIntersecting) {
+                progressContainer.style.height = '0.5rem';
+            } else {
+                progressContainer.style.height = '0';
+            }
+        }
+
+        // Get the percentage scrolled of an element. It returns zero if its not in view.
+        function getScrollProgress(el) {
+            let coords = el.getBoundingClientRect();
+            let height = coords.height;
+            let progressPercentage = 0;
+
+            if (coords.top < 0) {
+                progressPercentage = Math.min(
+                    (Math.abs(coords.top) / height) * 100,
+                    100
+                );
+            }
+
+            return progressPercentage;
+        }
+
+        function showReadingProgress() {
+            progress.setAttribute('value', getScrollProgress(content));
+        }
+
+        // Scroll Event Listener
+        window.onscroll = showReadingProgress;
+
+        /* Transition Internal Links */
+        // function isInternalLink(link) {
+        //     return link.host == window.location.host;
+        // }
+        // $('a').each(function () {
+        //     if (isInternalLink(this) && this.href.indexOf('#') === -1) {
+        //         $(this).click(function (e) {
+        //             e.preventDefault();
+        //             var moduleURL = jQuery(this).attr('href');
+        //             setTimeout(function () {
+        //                 window.location = moduleURL;
+        //             }, 500);
+        //             /* Trigger Animation, excluding already transformed elements like article pills */
+        //             $(`div[id^='page-'], footer > *`).addClass('page-out');
+        //         });
+        //     }
+        // });
+
+        /* Toggle footer copyright text */
+        // let showFullCopyright = false;
+        // $('.footer-copyright').hover(() => {
+        //     showFullCopyright = !showFullCopyright;
+        //     $('.footer-copyright').text(
+        //         showFullCopyright ? '©2021 James V. Clements' : '©2021 JM.SV'
+        //     );
+        // });
+
+        /* Keep footer text updated */
+        const currentYear = new Date().getFullYear();
+        $(`[data-current-year]`).text(currentYear);
+    });
+</script>
